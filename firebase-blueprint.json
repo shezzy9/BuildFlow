@@ -1,0 +1,854 @@
+{
+  "entities": {
+    "AdminRole": {
+      "title": "AdminRole",
+      "description": "Trusted administrator registry document keyed by user UID.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Administrator user UID."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 160,
+          "description": "Verified administrator email."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation server timestamp."
+        }
+      },
+      "required": ["uid", "email", "createdAt"]
+    },
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Workspace user profile containing non-PII operational role metadata.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Owner user UID."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Display name of the team member."
+        },
+        "role": {
+          "type": "string",
+          "enum": ["Admin", "Store Manager", "Inventory Clerk", "Billing Executive"],
+          "maxLength": 40,
+          "description": "Operational role within BuildFlow Supply."
+        },
+        "department": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "description": "Assigned yard or department."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["Active", "Suspended"],
+          "maxLength": 20,
+          "description": "Account status."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last update."
+        }
+      },
+      "required": ["uid", "name", "role", "department", "status", "createdAt", "updatedAt"]
+    },
+    "UserPrivateInfo": {
+      "title": "UserPrivateInfo",
+      "description": "Isolated PII subcollection document for user contact details.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Owner user UID."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 160,
+          "description": "Private email address."
+        },
+        "phone": {
+          "type": "string",
+          "maxLength": 40,
+          "description": "Private phone number."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of update."
+        }
+      },
+      "required": ["uid", "email", "phone", "updatedAt"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Building material catalogue item with stock and pricing.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "sku": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "category": {
+          "type": "string",
+          "enum": ["Cement", "Steel", "Bricks", "Pipes", "Timber", "Aggregates"],
+          "maxLength": 30
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "quantity": {
+          "type": "number"
+        },
+        "minStockLevel": {
+          "type": "number"
+        },
+        "purchasePrice": {
+          "type": "number"
+        },
+        "sellingPrice": {
+          "type": "number"
+        },
+        "supplierId": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "supplierName": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "location": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "specification": {
+          "type": "string",
+          "maxLength": 240
+        },
+        "ownerId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "sku",
+        "category",
+        "unit",
+        "quantity",
+        "minStockLevel",
+        "purchasePrice",
+        "sellingPrice",
+        "supplierId",
+        "supplierName",
+        "location",
+        "specification",
+        "ownerId",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Supplier": {
+      "title": "Supplier",
+      "description": "Building material manufacturer or distributor.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "contactPerson": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "phone": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 160
+        },
+        "city": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "category": {
+          "type": "string",
+          "maxLength": 40
+        },
+        "leadTimeDays": {
+          "type": "number"
+        },
+        "rating": {
+          "type": "number"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["Active", "On Hold"],
+          "maxLength": 20
+        },
+        "ownerId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "code",
+        "contactPerson",
+        "phone",
+        "email",
+        "city",
+        "category",
+        "leadTimeDays",
+        "rating",
+        "status",
+        "ownerId",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Customer": {
+      "title": "Customer",
+      "description": "Trade contractor, architectural firm, or developer account.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "company": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "phone": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 160
+        },
+        "city": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "gstOrTaxId": {
+          "type": "string",
+          "maxLength": 40
+        },
+        "creditLimit": {
+          "type": "number"
+        },
+        "outstandingBalance": {
+          "type": "number"
+        },
+        "tier": {
+          "type": "string",
+          "enum": ["Contractor", "Architectural Firm", "Developer", "Retail"],
+          "maxLength": 40
+        },
+        "ownerId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "company",
+        "phone",
+        "email",
+        "city",
+        "gstOrTaxId",
+        "creditLimit",
+        "outstandingBalance",
+        "tier",
+        "ownerId",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "PurchaseOrder": {
+      "title": "PurchaseOrder",
+      "description": "Inward supply purchase entry linked to supplier and product.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "poNumber": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "supplierId": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "supplierName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "productId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "productName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "sku": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "quantity": {
+          "type": "number"
+        },
+        "unitPrice": {
+          "type": "number"
+        },
+        "taxAmount": {
+          "type": "number"
+        },
+        "totalAmount": {
+          "type": "number"
+        },
+        "paymentStatus": {
+          "type": "string",
+          "enum": ["Paid", "Partial", "Pending"],
+          "maxLength": 20
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "status": {
+          "type": "string",
+          "enum": ["received", "completed"],
+          "maxLength": 20
+        },
+        "ownerId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "poNumber",
+        "supplierId",
+        "supplierName",
+        "productId",
+        "productName",
+        "sku",
+        "quantity",
+        "unitPrice",
+        "taxAmount",
+        "totalAmount",
+        "paymentStatus",
+        "notes",
+        "status",
+        "ownerId",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "SaleInvoice": {
+      "title": "SaleInvoice",
+      "description": "Outward customer sale and generated tax invoice.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "invoiceNumber": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "customerId": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "customerName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "customerCompany": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "primaryProductId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "primaryProductName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "itemCount": {
+          "type": "number"
+        },
+        "totalQuantity": {
+          "type": "number"
+        },
+        "subtotal": {
+          "type": "number"
+        },
+        "discountAmount": {
+          "type": "number"
+        },
+        "taxRate": {
+          "type": "number"
+        },
+        "taxAmount": {
+          "type": "number"
+        },
+        "grandTotal": {
+          "type": "number"
+        },
+        "paymentMethod": {
+          "type": "string",
+          "enum": ["Bank Transfer", "Card", "Cash", "Credit Account"],
+          "maxLength": 30
+        },
+        "paymentStatus": {
+          "type": "string",
+          "enum": ["Paid", "Pending", "Partial"],
+          "maxLength": 20
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "itemsSummary": {
+          "type": "string",
+          "maxLength": 1800
+        },
+        "status": {
+          "type": "string",
+          "enum": ["issued", "completed"],
+          "maxLength": 20
+        },
+        "ownerId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "invoiceNumber",
+        "customerId",
+        "customerName",
+        "customerCompany",
+        "primaryProductId",
+        "primaryProductName",
+        "itemCount",
+        "totalQuantity",
+        "subtotal",
+        "discountAmount",
+        "taxRate",
+        "taxAmount",
+        "grandTotal",
+        "paymentMethod",
+        "paymentStatus",
+        "notes",
+        "itemsSummary",
+        "status",
+        "ownerId",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "SaleLineItem": {
+      "title": "SaleLineItem",
+      "description": "Subcollection line item belonging to a parent SaleInvoice.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "saleId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "productId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "productName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "sku": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "quantity": {
+          "type": "number"
+        },
+        "unitPrice": {
+          "type": "number"
+        },
+        "lineTotal": {
+          "type": "number"
+        },
+        "ownerId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "saleId",
+        "productId",
+        "productName",
+        "sku",
+        "unit",
+        "quantity",
+        "unitPrice",
+        "lineTotal",
+        "ownerId",
+        "createdAt"
+      ]
+    },
+    "StockMovement": {
+      "title": "StockMovement",
+      "description": "Immutable inventory ledger entry recording stock additions, deductions, or adjustments.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "productId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "productName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "sku": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "type": {
+          "type": "string",
+          "enum": ["IN_PURCHASE", "OUT_SALE", "ADJUSTMENT"],
+          "maxLength": 24
+        },
+        "quantityDelta": {
+          "type": "number"
+        },
+        "previousStock": {
+          "type": "number"
+        },
+        "newStock": {
+          "type": "number"
+        },
+        "referenceNumber": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "ownerId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "productId",
+        "productName",
+        "sku",
+        "type",
+        "quantityDelta",
+        "previousStock",
+        "newStock",
+        "referenceNumber",
+        "reason",
+        "ownerId",
+        "createdAt"
+      ]
+    },
+    "BusinessSettings": {
+      "title": "BusinessSettings",
+      "description": "Organization-level configuration for billing, taxes, and warehouse details.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "businessName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "legalName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 140
+        },
+        "taxRegistrationNumber": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
+        },
+        "currencySymbol": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8
+        },
+        "defaultTaxRate": {
+          "type": "number"
+        },
+        "invoicePrefix": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16
+        },
+        "warehouseAddress": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "contactEmail": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 160
+        },
+        "contactPhone": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "lowStockGlobalThreshold": {
+          "type": "number"
+        },
+        "ownerId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "businessName",
+        "legalName",
+        "taxRegistrationNumber",
+        "currencySymbol",
+        "defaultTaxRate",
+        "invoicePrefix",
+        "warehouseAddress",
+        "contactEmail",
+        "contactPhone",
+        "lowStockGlobalThreshold",
+        "ownerId",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/admins/{adminId}": {
+      "schema": "AdminRole",
+      "description": "Trusted administrator lookup table."
+    },
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Workspace team member profile (non-PII)."
+    },
+    "/users/{userId}/private/{docId}": {
+      "schema": "UserPrivateInfo",
+      "description": "Isolated private PII contact details for a user."
+    },
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Building material catalogue and live stock quantities."
+    },
+    "/suppliers/{supplierId}": {
+      "schema": "Supplier",
+      "description": "Approved material suppliers and manufacturers."
+    },
+    "/customers/{customerId}": {
+      "schema": "Customer",
+      "description": "Trade customers, contractors, and architectural firms."
+    },
+    "/purchases/{purchaseId}": {
+      "schema": "PurchaseOrder",
+      "description": "Inward purchase orders and restock records."
+    },
+    "/sales/{saleId}": {
+      "schema": "SaleInvoice",
+      "description": "Outward sales transactions and tax invoices."
+    },
+    "/sales/{saleId}/items/{itemId}": {
+      "schema": "SaleLineItem",
+      "description": "Line items belonging to a specific SaleInvoice."
+    },
+    "/stockMovements/{movementId}": {
+      "schema": "StockMovement",
+      "description": "Audit log of stock additions, deductions, and manual adjustments."
+    },
+    "/settings/{settingId}": {
+      "schema": "BusinessSettings",
+      "description": "Business profile, tax rate, and invoice configuration."
+    }
+  }
+}

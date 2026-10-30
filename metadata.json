@@ -1,0 +1,6 @@
+{
+  "name": "BuildFlow Supply",
+  "description": "Modern architectural building-material supply, inventory management, procurement, and point-of-sale platform with interactive 3D material showcase.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
